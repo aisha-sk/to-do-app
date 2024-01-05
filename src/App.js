@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react'
 import {AiOutlinePlus} from 'react-icons/ai'
 import Todo from './Todo'
 import {db} from './firebase'
-import {query, collection, onSnapshot, updateDoc, addDoc,doc} from 'firebase/firestore'
+import {query, collection, onSnapshot, updateDoc, addDoc,doc, deleteDoc} from 'firebase/firestore'
 
 const style = {
   bg:`h-screen w-screen p-4 bg-gradient-to-r from-[#EBB8DD] to-[#CAE7D3]`,
@@ -16,7 +16,7 @@ const style = {
 
 function App() {
   const [todos,setTodos] = useState([])
-  const [input, setinput] = useState('')
+  const [input, setInput] = useState('')
   // create todo
   const createTodo = async (e) => {
     e.preventDefault(e)
@@ -28,6 +28,7 @@ function App() {
       text: input,
       completed: false,
     })
+    setInput('')
   }
   // read todo from firebase
   useEffect(()=>{
@@ -46,10 +47,12 @@ function App() {
     await updateDoc(doc(db, 'todos', todo.id), {
       completed: !todo.completed
     })
-    setinput('')
   }
 
   // delete to do
+  const deleteTodo = async (id) => {
+    await deleteDoc(doc(db, 'todos', id))
+  }
 
 
 
@@ -58,12 +61,12 @@ function App() {
       <div className={style.container}>
         <h3 className={style.heading}>To Do App</h3>
         <form onSubmit={createTodo} className={style.form}>
-          <input value={input} onChange={(e) => setinput(e.target.value)} className={style.input} type="text" placeholder="Add todo" />
+          <input value={input} onChange={(e) => setInput(e.target.value)} className={style.input} type="text" placeholder="Add todo" />
           <button className={style.button}><AiOutlinePlus size={30} /></button>
         </form>
         <ul>
           {todos.map((todo, index)=>(
-            <Todo key={index} todo={todo} toggleComplete={toggleComplete} />
+            <Todo key={index} todo={todo} toggleComplete={toggleComplete} deleteTodo={deleteTodo}  />
           ))}
           
         </ul>
