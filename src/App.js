@@ -1,6 +1,9 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import {AiOutlinePlus} from 'react-icons/ai'
 import Todo from './Todo'
+import {db} from './firebase'
+import {query, collection} from 'firebase/firestore'
+
 const style = {
   bg:`h-screen w-screen p-4 bg-gradient-to-r from-[#EBB8DD] to-[#CAE7D3]`,
   container: `bg-slate-100 max-w-[500px] w-full m-auto rounded-md shadow-xl p-4`,
@@ -13,6 +16,7 @@ const style = {
 
 function App() {
   const [todos,setTodos] = useState(['Learn React', 'Grind LC'])
+  
   return (
     <div className={style.bg}>
       <div className={style.container}>
